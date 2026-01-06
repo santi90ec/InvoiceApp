@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<ProcessInvoiceUseCase>();
+// builder.Services.AddScoped<ProcessInvoiceUseCase>();
 
 var app = builder.Build();
 

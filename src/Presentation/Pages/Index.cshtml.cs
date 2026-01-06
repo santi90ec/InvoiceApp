@@ -7,11 +7,11 @@ namespace InvoiceApp.Presentation.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ProcessInvoiceUseCase _useCase;
+    // private readonly ProcessInvoiceUseCase _useCase;
 
-    public IndexModel(ProcessInvoiceUseCase useCase)
+    public IndexModel()
     {
-        _useCase = useCase;
+        //_useCase = useCase;
     }
 
     [BindProperty] public IFormFile? XmlFile { get; set; }
@@ -36,8 +36,8 @@ public class IndexModel : PageModel
             await using (var fs = System.IO.File.Create(tempFilePath))
                 await XmlFile.CopyToAsync(fs, ct);
 
-            var result = await _useCase.ProcessSingleInvoiceAsyn(tempFilePath, ct);
-            Results = [result];
+            //var result = await _useCase.ProcessSingleInvoiceAsyn(tempFilePath, ct);
+            //Results = [result];
         }
         catch (Exception ex)
         {
@@ -76,8 +76,8 @@ public class IndexModel : PageModel
                 await file.CopyToAsync(fs, ct);
             }
 
-            var results = await _useCase.ProcessMultipleInvoicesAsync(runFolder, ct);
-            Results = [.. results];
+            //var results = await _useCase.ProcessMultipleInvoicesAsync(runFolder, ct);
+            //Results = [.. results];
         }
         catch (Exception ex)
         {

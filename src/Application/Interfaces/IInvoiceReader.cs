@@ -9,5 +9,6 @@ namespace InvoiceApp.Application.Interfaces
         Task<Invoice> ReadFromFileAsync(string filePath, CancellationToken ct = default);
 
         Task<Invoice> ReadFromXmlAsync(string xmlContent, CancellationToken ct = default);
+        Task<List<Invoice>> ReadFromXmlMultipleAsync(string filePath, CancellationToken ct = default);
     }
 }

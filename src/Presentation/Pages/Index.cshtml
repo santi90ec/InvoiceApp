@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -7,4 +7,70 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+
+@page
+@model InvoiceApp.Presentation.Pages.IndexModel
+
+<h2>Invoices</h2>
+
+<div style="display:flex; gap:24px; align-items:flex-start;">
+    <!-- Single XML -->
+    <div style="border:1px solid #ddd; padding:16px; width: 420px;">
+        <h3>Cargar XML</h3>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="ProcessFile">
+            <input type="file" name="XmlFile" accept=".xml" required />
+            <div style="margin-top:12px;">
+                <button type="submit">Procesar XML</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Folder (upload many files from a folder) -->
+    <div style="border:1px solid #ddd; padding:16px; width: 420px;">
+        <h3>Leer carpeta</h3>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="ProcessFolder">
+            <input type="file" name="FolderFiles" webkitdirectory multiple />
+            <div style="margin-top:12px;">
+                <button type="submit">Procesar carpeta</button>
+            </div>
+            <small>Nota: funciona mejor en Chrome/Edge.</small>
+        </form>
+    </div>
 </div>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div style="margin-top:16px; color:#b00020;">
+        <strong>Error:</strong> @Model.ErrorMessage
+    </div>
+}
+
+@if (Model.Results?.Count > 0)
+{
+    <h3 style="margin-top:24px;">Resultados</h3>
+
+    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse; width:100%;">
+        <thead>
+            <tr>
+                <th>InvoiceNumber</th>
+                <th>Category</th>
+                <th>Eligible</th>
+                <th>Confidence</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Results)
+            {
+                <tr>
+                    <td>@r.InvoiceNumber</td>
+                    <td>@r.Category</td>
+                    <td>@r.IsVatRefundEligible</td>
+                    <td>@r.Confidence</td>
+                    <td>@r.Reason</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -4,14 +4,39 @@ namespace InvoiceApp.Models;
 
 public class Invoice
 {
-    public Invoice(string invoiceNumber, IEnumerable<InvoiceItem> items)
+    public Invoice(
+        Issuer issuer,
+        Buyer buyer,
+        DateTime invoiceDate,
+        FinancialSummary financialSummary,
+        IEnumerable<InvoiceItem> items)
     {
-        InvoiceNumber = invoiceNumber;
+        Issuer = issuer;
+        Buyer = buyer;
+        InvoiceDate = invoiceDate;
+        FinancialSummary = financialSummary;
         Items = new ReadOnlyCollection<InvoiceItem>(items.ToList());
     }
-    public string InvoiceNumber { get; }
+
+    public Issuer Issuer { get; }
+    public Buyer Buyer { get; }
+    public DateTime InvoiceDate { get; }
+    public FinancialSummary FinancialSummary { get; }
     public IReadOnlyList<InvoiceItem> Items { get; }
 }
+
+public class Buyer
+{
+}
+
+public class Issuer
+{
+}
+
+public class FinancialSummary
+{
+}
+
 public class InvoiceItem
 {
     public InvoiceItem(string description, decimal lineBaseAmount, VatTax? vat)

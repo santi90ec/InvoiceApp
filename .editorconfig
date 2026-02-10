@@ -1,0 +1,42 @@
+root = true
+
+# =========================
+# Global defaults
+# =========================
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# =========================
+# Markdown / Docs
+# =========================
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# =========================
+# YAML / JSON / Config
+# =========================
+[*.{yml,yaml,json}]
+indent_style = space
+indent_size = 2
+
+# =========================
+# C# / .NET (preparado Sprint 1)
+# =========================
+[*.cs]
+indent_style = space
+indent_size = 4
+
+[*.csproj]
+indent_style = space
+indent_size = 2
+
+# =========================
+# Shell / Scripts
+# =========================
+[*.sh]
+indent_style = space
+indent_size = 2

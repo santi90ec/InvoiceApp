@@ -1,7 +1,8 @@
+using System.Xml.Linq;
 using InvoiceApp.Application.Interfaces;
 using InvoiceApp.Models;
 
-namespace InvoiceApp.Infrastructure.Storage;
+namespace InvoiceApp.Infrastracture.Storage;
 
 public class InvoiceRepository : IInvoiceRepository
 {
@@ -15,16 +16,28 @@ public class InvoiceRepository : IInvoiceRepository
     {
         var xmlFiles = Directory.EnumerateFiles(path, "*.xml", SearchOption.TopDirectoryOnly).ToList();
         var invoices = new List<Invoice>(xmlFiles.Count);
-        foreach (var file in xmlFiles)
+        foreach (var xmlfile in xmlFiles)
         {
             ct.ThrowIfCancellationRequested();
-            invoices.Add(await GetInvoiceByXmlPathAsync(file, ct));
+            var invoice = await GetInvoiceByXmlPathAsync(xmlfile, ct);
+            invoices.Add(invoice);
         }
-        return invoices;
+        return invoices.AsReadOnly();
     }
 
-    public Task<Invoice> GetInvoiceByXmlPathAsync(string xmlPath, CancellationToken ct = default)
+    public async Task<Invoice> GetInvoiceByXmlPathAsync(string xmlPath, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        // Leer contenido del archivo
+        var xmlContent = await File.ReadAllTextAsync(xmlPath, ct);
+
+        // Parsear y retornar
+        return await ParseInvoiceFromXml(xmlContent);
+    }
+
+    private static Task<Invoice> ParseInvoiceFromXml(string xmlContent)
+    {
+        var doc = XDocument.Parse(xmlContent);
+        // TODO: Parse 'doc' to create and return an Invoice instance
+        throw new NotImplementedException("Parsing logic not implemented.");
     }
 }

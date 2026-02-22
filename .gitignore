@@ -1,8 +1,12 @@
-## =========================
-## Base oficial .NET
-## =========================
-
-# Build results
+# =========================
+# Agentes IA (Gemini)
+# =========================
+# Ignore Gemini workspace, caches and generated files
+GEMINI.md
+.gemini/
+.gemini/**
+*.gemini-cache
+*.gemini
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -15,7 +19,7 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-
+GEMINI.md
 # Logs
 [Ll]og/
 [Ll]ogs/

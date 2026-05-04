@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-pepe
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - TZ=${TZ}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - NODES_EXCLUDE=${NODES_EXCLUDE}
+      - N8N_RESTRICT_FILE_ACCESS_TO=${N8N_RESTRICT_FILE_ACCESS_TO}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./shared-local:/files
+    networks:
+      - n8n-network
+
+networks:
+  n8n-network:
+    driver: bridge
+
+volumes:
+  n8n_data:
+    driver: local

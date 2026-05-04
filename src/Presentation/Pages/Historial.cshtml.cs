@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InvoiceApp.Presentation.Pages;
 
-public class IndexModel : PageModel
+public class HistorialModel : PageModel
 {
     public void OnGet()
     {

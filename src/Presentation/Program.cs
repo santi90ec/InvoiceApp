@@ -1,11 +1,17 @@
 using InvoiceApp.Application.Interfaces;
 using InvoiceApp.Application.UseCase;
+using InvoiceApp.Infrastracture.Classification;
+using InvoiceApp.Infrastracture.Storage;
+using InvoiceApp.Infrastracture.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-// builder.Services.AddScoped<ProcessInvoiceUseCase>();
+builder.Services.AddScoped<IInvoiceReader, InvoiceXmlReader>();
+builder.Services.AddScoped<IInvoiceClassifier, BasicInvoiceClassifier>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<ProcessInvoiceUseCase>();
 
 var app = builder.Build();
 

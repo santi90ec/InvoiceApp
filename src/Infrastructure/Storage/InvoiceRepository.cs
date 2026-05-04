@@ -1,14 +1,15 @@
-using System.Xml.Linq;
 using InvoiceApp.Application.Interfaces;
 using InvoiceApp.Models;
+using InvoiceApp.Infrastracture.Xml;
 
 namespace InvoiceApp.Infrastracture.Storage;
 
 public class InvoiceRepository : IInvoiceRepository
 {
+    private readonly InvoiceXmlReader _reader = new();
+
     public async Task<IReadOnlyList<Invoice>> GetAllInvoicesByPathAsync(string path, CancellationToken ct = default)
     {
-        var xml = await File.ReadAllTextAsync(path, ct);
         return await ParseXmlInvoices(path, ct);
     }
 
@@ -27,17 +28,6 @@ public class InvoiceRepository : IInvoiceRepository
 
     public async Task<Invoice> GetInvoiceByXmlPathAsync(string xmlPath, CancellationToken ct = default)
     {
-        // Leer contenido del archivo
-        var xmlContent = await File.ReadAllTextAsync(xmlPath, ct);
-
-        // Parsear y retornar
-        return await ParseInvoiceFromXml(xmlContent);
-    }
-
-    private static Task<Invoice> ParseInvoiceFromXml(string xmlContent)
-    {
-        var doc = XDocument.Parse(xmlContent);
-        // TODO: Parse 'doc' to create and return an Invoice instance
-        throw new NotImplementedException("Parsing logic not implemented.");
+        return await _reader.ReadFromFileAsync(xmlPath, ct);
     }
 }

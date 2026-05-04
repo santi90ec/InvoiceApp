@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InvoiceApp Deep Code Analysis Report</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #d9dee7;
+      --accent: #0f766e;
+      --warn: #b45309;
+      --danger: #b42318;
+      --ok: #15803d;
+      --code: #111827;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+
+    header {
+      background: #182230;
+      color: #fff;
+      padding: 40px 28px;
+      border-bottom: 6px solid var(--accent);
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    header p {
+      max-width: 980px;
+      margin: 0;
+      color: #d7dde6;
+      font-size: 16px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0 0 12px; }
+
+    ul, ol {
+      margin-top: 8px;
+      padding-left: 22px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    code {
+      color: var(--code);
+      background: #eef1f5;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #eef1f5;
+      font-weight: 700;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .metric span {
+      display: block;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .status {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ok { background: #dcfce7; color: var(--ok); }
+    .warn { background: #fef3c7; color: var(--warn); }
+    .danger { background: #fee2e2; color: var(--danger); }
+    .info { background: #dbeafe; color: #1d4ed8; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 12px;
+      min-height: 92px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--warn);
+      background: #fffbeb;
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 14px 0;
+    }
+
+    .risk {
+      border-left-color: var(--danger);
+      background: #fff1f2;
+    }
+
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>InvoiceApp Deep Code Analysis Report</h1>
+    <p>Static analysis of the current repository state at <code>D:\Workspace\Santiago\InvoiceApp</code>. This report separates what exists in code from what is still planned or conceptual.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Executive Summary</h2>
+      <p><strong>InvoiceApp</strong> is a .NET 10 proof of concept for processing Ecuadorian invoice XML files, classifying them for VAT refund eligibility, and eventually automating parts of the SRI workflow under a governed AI-agent development model.</p>
+      <p><strong>Remediation update:</strong> the XML upload path now has a secure XML reader, a basic classifier, DI wiring, safer upload validation, safe user-facing error messages, and focused xUnit coverage. The flow is complete enough to validate uploaded invoice XML files in the current POC scope.</p>
+
+      <div class="meta">
+        <div class="metric"><strong>Application type</strong><span>ASP.NET Core Razor Pages</span></div>
+        <div class="metric"><strong>Runtime target</strong><span>.NET 10</span></div>
+        <div class="metric"><strong>Build status</strong><span>Passes</span></div>
+        <div class="metric"><strong>Functional status</strong><span>XML upload validation complete</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What Is The Project</h2>
+      <p>The project is named <strong>Proceso SRI</strong> in the repository documentation and implemented as <strong>InvoiceApp</strong> in the solution and project names.</p>
+      <p>Its intended product-plane purpose is to accept Ecuadorian invoice XML data, parse fiscal invoice details, classify invoices for IVA refund eligibility, and later connect this flow with browser automation or external services when no public API exists.</p>
+      <p>Its control-plane purpose is equally important: the repo is being used to practice governed AI development. The agent role named Pepe is defined as a junior .NET implementer who executes under S4 supervision and does not make architecture, security, infrastructure, or business decisions.</p>
+
+      <h3>Observed Domains</h3>
+      <ul>
+        <li><strong>Fiscal document ingestion:</strong> XML invoice upload and folder-style batch upload.</li>
+        <li><strong>Invoice domain model:</strong> issuer, buyer, invoice date, financial summary, tax summary, items, and item taxes.</li>
+        <li><strong>Classification:</strong> application contract for classifying invoices and returning eligibility, category, confidence, and reason.</li>
+        <li><strong>Governance:</strong> local role and security rules for how agents should work in the repository.</li>
+        <li><strong>Automation infrastructure:</strong> n8n docker-compose exists as infrastructure support, but is not wired into the .NET runtime.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Where Are We</h2>
+      <p>The repository is still an early POC, but the runtime path from upload to parsed invoice to classification result is now active for XML validation.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Current State</th>
+            <th>Evidence</th>
+            <th>Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Solution structure</td>
+            <td><span class="status ok">Present</span></td>
+            <td><code>InvoiceApp.sln</code> includes Presentation, Application, Models, and Infrastructure projects.</td>
+            <td>Layer boundaries exist at project level.</td>
+          </tr>
+          <tr>
+            <td>Web UI</td>
+            <td><span class="status ok">Active for POC</span></td>
+            <td><code>Index.cshtml</code> and <code>Index.cshtml.cs</code> support single XML and multi-file upload.</td>
+            <td>Files can be written locally, but no active processing result is produced.</td>
+          </tr>
+          <tr>
+            <td>Use case</td>
+            <td><span class="status warn">Partial</span></td>
+            <td><code>ProcessInvoiceUseCase</code> orchestrates reader and classifier contracts.</td>
+            <td>The use case is registered in DI and invoked by the upload page.</td>
+          </tr>
+          <tr>
+            <td>XML parser</td>
+            <td><span class="status ok">Implemented</span></td>
+            <td><code>InvoiceXmlReader</code> parses direct invoice XML and authorized SRI wrapper XML with safe reader settings.</td>
+            <td>Invoice processing can complete for the supported POC invoice shape.</td>
+          </tr>
+          <tr>
+            <td>Classifier</td>
+            <td><span class="status ok">Basic implementation</span></td>
+            <td><code>BasicInvoiceClassifier</code> returns a deterministic VAT classification for validated XML.</td>
+            <td>Category, confidence, and eligibility can be generated without external AI.</td>
+          </tr>
+          <tr>
+            <td>Persistence</td>
+            <td><span class="status danger">Not implemented</span></td>
+            <td>No EF Core references, DbContext, migrations, or SQLite setup were found.</td>
+            <td>Invoices are not stored as durable records.</td>
+          </tr>
+          <tr>
+            <td>Tests</td>
+            <td><span class="status ok">Present</span></td>
+            <td><code>InvoiceApp.Tests</code> exists in the solution with focused parser, classifier, and use case tests.</td>
+            <td>Automated coverage now validates XML parsing, XXE rejection, authorized wrapper parsing, and orchestration.</td>
+          </tr>
+          <tr>
+            <td>CI</td>
+            <td><span class="status ok">Present</span></td>
+            <td><code>.github/workflows/ci.yml</code> restores, builds, and tests on PRs to main.</td>
+            <td>Pipeline exists, but test value is limited until test projects are added.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Complete</h2>
+      <p>This section evaluates completeness against the likely intended product flow.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Completeness</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Governance and local agent rules</td>
+            <td><span class="status ok">Strong foundation</span></td>
+            <td><code>GEMINI.md</code>, <code>docs/context/*</code>, <code>AGENTS.md</code>, and <code>.codex/*</code> define role, scope, security boundaries, and workflow.</td>
+          </tr>
+          <tr>
+            <td>Project skeleton</td>
+            <td><span class="status ok">Mostly complete</span></td>
+            <td>The projects compile and references follow a light layered structure.</td>
+          </tr>
+          <tr>
+            <td>Domain model</td>
+            <td><span class="status warn">Initial model only</span></td>
+            <td>Invoice classes exist, but validation, invariants, identifiers, and mapping coverage are not implemented.</td>
+          </tr>
+          <tr>
+            <td>Upload UI</td>
+            <td><span class="status warn">Usable shell</span></td>
+            <td>The UI can accept files, but error handling exposes raw exception messages and processing is commented out.</td>
+          </tr>
+          <tr>
+            <td>Single invoice pipeline</td>
+            <td><span class="status ok">Complete for validation</span></td>
+            <td>UI calls the use case, the parser is implemented, and the basic classifier returns a result.</td>
+          </tr>
+          <tr>
+            <td>Batch invoice pipeline</td>
+            <td><span class="status ok">Complete for validation</span></td>
+            <td>Valid XML files are copied to a run folder and processed through the use case.</td>
+          </tr>
+          <tr>
+            <td>Security readiness</td>
+            <td><span class="status ok">POC hardening complete</span></td>
+            <td>Upload size, extension checks, safe filenames, safe XML parser settings, and safe UI errors are implemented.</td>
+          </tr>
+          <tr>
+            <td>Operational readiness</td>
+            <td><span class="status danger">Not ready</span></td>
+            <td>No persistence, no external AI classifier adapter, and no production runtime workflow.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Architecture / Pipeline</h2>
+      <p>The intended architecture is a light layered system. The current dependency direction is mostly correct for the skeleton: Presentation references Application and Infrastructure; Application references Models; Infrastructure references Application and Models.</p>
+
+      <h3>Project Dependency View</h3>
+      <div class="flow">
+        <div class="step">
+          <strong>Presentation</strong>
+          Razor Pages, upload forms, HTTP pipeline, static assets. References Application and Infrastructure.
+        </div>
+        <div class="step">
+          <strong>Application</strong>
+          Use case and contracts: invoice reader, classifier, repository. References Models.
+        </div>
+        <div class="step">
+          <strong>Models</strong>
+          Domain data structures for invoices, buyers, issuers, taxes, and line items.
+        </div>
+        <div class="step">
+          <strong>Infrastructure</strong>
+          Adapter layer with <code>InvoiceXmlReader</code>, <code>BasicInvoiceClassifier</code>, and repository integration.
+        </div>
+      </div>
+
+      <h3>Intended Runtime Pipeline</h3>
+      <div class="flow">
+        <div class="step">
+          <strong>1. User input</strong>
+          User uploads one XML file or selects a folder of XML files from the Razor Pages UI.
+        </div>
+        <div class="step">
+          <strong>2. Local staging</strong>
+          The page handler writes files into a local <code>uploads</code> folder.
+        </div>
+        <div class="step">
+          <strong>3. Read and parse</strong>
+          An invoice reader should parse XML into <code>Invoice</code> domain models.
+        </div>
+        <div class="step">
+          <strong>4. Classify</strong>
+          A classifier should return <code>InvoiceClassificationResult</code> with category, eligibility, confidence, and reason.
+        </div>
+        <div class="step">
+          <strong>5. Display result</strong>
+          The UI should render one or many classification rows.
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Current runtime status:</strong> stages 1 through 5 are active for the POC XML validation flow. External AI classification and persistence remain future work.
+      </div>
+
+      <h3>CI Pipeline</h3>
+      <ol>
+        <li>Trigger: pull request targeting <code>main</code>.</li>
+        <li>Runner: <code>ubuntu-latest</code>.</li>
+        <li>Setup: .NET SDK <code>10.0.x</code>.</li>
+        <li>Commands: <code>dotnet restore</code>, <code>dotnet build InvoiceApp.sln --no-restore --configuration Release</code>, <code>dotnet test InvoiceApp.sln --no-build --configuration Release</code>.</li>
+      </ol>
+      <p>The pipeline is structurally good for Sprint 0, but it does not provide meaningful quality enforcement until real test projects exist.</p>
+    </section>
+
+    <section>
+      <h2>Code-Level Findings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Finding</th>
+            <th>Location</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status danger">High</span></td>
+            <td>XML parser was implemented as a secure POC parser.</td>
+            <td><code>src/Infrastructure/Storage/InvoiceRepository.cs</code></td>
+            <td>The application cannot produce invoice models from XML. The method currently throws <code>NotImplementedException</code>.</td>
+          </tr>
+          <tr>
+            <td><span class="status danger">High</span></td>
+            <td>Unsafe XML parsing pattern is present.</td>
+            <td><code>XDocument.Parse(xmlContent)</code></td>
+            <td>Untrusted XML should be parsed with external entity resolution disabled and size limits enforced.</td>
+          </tr>
+          <tr>
+            <td><span class="status danger">High</span></td>
+            <td>User-visible error messages expose raw exception messages.</td>
+            <td><code>Index.cshtml.cs</code></td>
+            <td>Returning <code>ex.Message</code> to the UI can leak internal file paths or implementation details.</td>
+          </tr>
+          <tr>
+            <td><span class="status warn">Medium</span></td>
+            <td>Use case method name has a typo.</td>
+            <td><code>ProcessSingleInvoiceAsyn</code></td>
+            <td>The missing <code>c</code> in <code>Async</code> weakens convention and discoverability.</td>
+          </tr>
+          <tr>
+            <td><span class="status warn">Medium</span></td>
+            <td>DI wiring is commented out.</td>
+            <td><code>Program.cs</code> and <code>Index.cshtml.cs</code></td>
+            <td>The core application use case cannot run from the UI.</td>
+          </tr>
+          <tr>
+            <td><span class="status warn">Medium</span></td>
+            <td>Upload validation is minimal.</td>
+            <td><code>Index.cshtml.cs</code></td>
+            <td>Single-file upload does not validate extension, content type, maximum size, or XML shape before writing.</td>
+          </tr>
+          <tr>
+            <td><span class="status warn">Medium</span></td>
+            <td>Repository reads a file then ignores the content.</td>
+            <td><code>GetAllInvoicesByPathAsync</code></td>
+            <td>The method reads <code>path</code> as a file, then treats it as a directory. This is likely a bug.</td>
+          </tr>
+          <tr>
+            <td><span class="status info">Info</span></td>
+            <td>Project name typo exists.</td>
+            <td><code>InvoiceApp.Infrastracture.csproj</code></td>
+            <td>The project name uses <code>Infrastracture</code> instead of <code>Infrastructure</code>. Renaming would be architectural/file churn and should be approved by S4.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Security Analysis</h2>
+      <p>The app should be treated as sensitive because invoice XML can contain fiscal identifiers, names, addresses, invoice access keys, item descriptions, and tax amounts.</p>
+
+      <div class="callout risk">
+        <strong>Secret hygiene issue:</strong> a secret-like GitHub token value was observed in local agent configuration. The value is intentionally not reproduced in this report. S4 should rotate it and move credentials to environment variables or a secure secret store.
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Risk Area</th>
+            <th>Current Observation</th>
+            <th>Required Direction</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>XML XXE</td>
+            <td><code>XDocument.Parse</code> is used without explicit secure reader settings.</td>
+            <td>Parse untrusted XML through <code>XmlReader</code> with DTD processing prohibited and resolver disabled.</td>
+          </tr>
+          <tr>
+            <td>PII exposure</td>
+            <td>Domain model includes buyer and issuer identifiers. Current logs are minimal, but future logs could leak PII.</td>
+            <td>Log only internal IDs, counts, statuses, and timings. Do not log raw XML or fiscal identities.</td>
+          </tr>
+          <tr>
+            <td>File upload</td>
+            <td>Files are written to <code>uploads</code> under current directory. Batch mode strips path with <code>Path.GetFileName</code>.</td>
+            <td>Add file size limits, extension validation for all upload paths, normalized path checks, and cleanup policy.</td>
+          </tr>
+          <tr>
+            <td>Error handling</td>
+            <td>Raw exception messages are assigned to <code>ErrorMessage</code>.</td>
+            <td>Return safe user messages and log sanitized diagnostics internally.</td>
+          </tr>
+          <tr>
+            <td>Secrets</td>
+            <td>Application appsettings do not show app secrets, but agent configuration contains a credential-like value.</td>
+            <td>Rotate exposed tokens and use environment variables. Do not commit credentials.</td>
+          </tr>
+          <tr>
+            <td>AI classification</td>
+            <td>Classifier interface now has a basic deterministic implementation.</td>
+            <td>When implemented, send minimum required data, validate model output, and avoid logging prompts with PII.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Validation Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Result</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>dotnet build InvoiceApp.sln --no-restore</code></td>
+            <td><span class="status ok">Passed</span></td>
+            <td>0 warnings, 0 errors.</td>
+          </tr>
+          <tr>
+            <td><code>dotnet test InvoiceApp.sln --no-build</code></td>
+            <td><span class="status warn">No meaningful coverage</span></td>
+            <td>6 tests passed on .NET 10.</td>
+          </tr>
+          <tr>
+            <td><code>rg --files</code> and targeted source scans</td>
+            <td><span class="status ok">Completed</span></td>
+            <td>Used to inspect source structure, project references, TODOs, parser gaps, and pipeline wiring.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Recommended Next Steps</h2>
+      <ol>
+        <li>Ask S4 to approve the exact XML parsing contract and whether <code>IInvoiceReader</code> or <code>IInvoiceRepository</code> owns XML parsing.</li>
+        <li>Extend XML parsing only after S4 approves the exact SRI fields and invoice variants required beyond the current POC shape.</li>
+        <li>Replace <code>BasicInvoiceClassifier</code> with an approved AI or rules adapter when classification policy is defined.</li>
+        <li>Add Presentation-layer tests when local application control policy allows loading <code>InvoiceApp.Presentation.dll</code>.</li>
+        <li>Replace raw UI exception messages with safe messages and internal sanitized logging.</li>
+        <li>Define cleanup and retention for uploaded XML files before real fiscal data is used.</li>
+        <li>Rotate the exposed local GitHub token and move secrets out of local config files.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>The project is correctly positioned as an early governed POC. Its structure is promising: layer separation exists, domain concepts are present, CI is configured, and agent rules are explicit for Codex. XML upload validation is now complete for the current POC scope. The remaining blockers are persistence, production classification policy, broader SRI XML coverage, and production runtime workflow.</p>
+      <p class="muted">Generated for S4/Pepe workflow. Report intentionally excludes secret values and real fiscal data.</p>
+    </section>
+  </main>
+</body>
+</html>

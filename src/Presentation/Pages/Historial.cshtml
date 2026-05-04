@@ -1,0 +1,28 @@
+@page "/historial"
+@model InvoiceApp.Presentation.Pages.HistorialModel
+@{
+    ViewData["Title"] = "Historial";
+}
+
+<section class="app-container page-section">
+    <div class="page-heading">
+        <h1>Historial</h1>
+        <p>Consulta los procesos de Devolución de IVA que hayas revisado desde esta aplicación.</p>
+    </div>
+
+    <div class="history-list" aria-label="Procesos anteriores">
+        <article class="history-row">
+            <div class="history-status" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+            </div>
+            <div class="history-content">
+                <h2>Sin procesos guardados</h2>
+                <p>Cuando revises facturas, aquí aparecerá el número de proceso, la fecha y el total encontrado.</p>
+            </div>
+            <a class="big-button big-button--secondary" asp-page="/Paso1">Nuevo proceso</a>
+        </article>
+    </div>
+</section>

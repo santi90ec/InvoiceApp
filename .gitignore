@@ -90,6 +90,11 @@ secrets/
 .env.*
 *.secret
 *.key
+.env
+infra/.env
+src/.env
+*.env.local
+*.env.*.local
 
 # =========================
 # OS / IDE

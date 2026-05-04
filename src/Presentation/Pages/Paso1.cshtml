@@ -1,0 +1,169 @@
+@page "/paso-1"
+@model InvoiceApp.Presentation.Pages.Paso1Model
+@{
+    ViewData["Title"] = "Paso 1: Elegir carpeta";
+    var totalFacturas = Model.Results?.Count ?? 0;
+    var totalProcesado = Model.Results?.Where(r => r.GrandTotal.HasValue).Sum(r => r.GrandTotal!.Value) ?? 0m;
+    var facturasConIva = Model.Results?.Count(r => r.IsVatRefundEligible) ?? 0;
+}
+
+<nav aria-label="Paso 1 de 5" class="stepper-shell">
+    <ol class="app-container stepper">
+        <li class="stepper__item stepper__item--active">
+            <span class="stepper__circle" aria-current="step">1</span>
+            <span class="stepper__text">
+                <span>Paso 1</span>
+                <small>Carpeta</small>
+            </span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">2</span>
+            <span class="stepper__text">
+                <span>Paso 2</span>
+                <small>Revisar</small>
+            </span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">3</span>
+            <span class="stepper__text">
+                <span>Paso 3</span>
+                <small>Clasificar</small>
+            </span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">4</span>
+            <span class="stepper__text">
+                <span>Paso 4</span>
+                <small>Iniciar</small>
+            </span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">5</span>
+            <span class="stepper__text">
+                <span>Paso 5</span>
+                <small>Resultados</small>
+            </span>
+        </li>
+    </ol>
+</nav>
+
+<section class="app-container page-section">
+    <div class="page-heading">
+        <h1>Elige la carpeta de tus facturas</h1>
+        <p>Necesitamos leer los archivos XML que te enviaron por tus compras. Suelen estar en Descargas o Documentos.</p>
+    </div>
+
+    <section class="app-card app-card--hero">
+        <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M3 6h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <path d="M3 6v12"></path>
+            </svg>
+        </div>
+        <div>
+            <h2>Carpeta de facturas</h2>
+            <p>Elige una carpeta completa si tienes varias facturas. También puedes subir un solo XML para revisar una factura puntual.</p>
+        </div>
+
+        <div class="upload-grid">
+            <form class="upload-form upload-form--boxed" method="post" enctype="multipart/form-data" asp-page-handler="ProcessFolder">
+                <label class="file-picker">
+                    <span>Carpeta con XML</span>
+                    <input type="file" name="FolderFiles" webkitdirectory multiple />
+                </label>
+                <button class="big-button big-button--primary" type="submit">
+                    Cargar facturas
+                    <span aria-hidden="true">→</span>
+                </button>
+                <small>Funciona mejor en Chrome o Edge.</small>
+            </form>
+
+            <form class="upload-form upload-form--boxed" method="post" enctype="multipart/form-data" asp-page-handler="ProcessFile">
+                <label class="file-picker">
+                    <span>Un solo XML</span>
+                    <input type="file" name="XmlFile" accept=".xml" />
+                </label>
+                <button class="big-button big-button--secondary" type="submit">
+                    Revisar XML
+                </button>
+            </form>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="app-alert app-alert--error" role="alert">
+            <strong>Revisa tus facturas</strong>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    @if (Model.Results?.Count > 0)
+    {
+        <section class="results-section" aria-labelledby="results-title">
+            <div class="results-heading">
+                <div>
+                    <h2 id="results-title">Facturas revisadas</h2>
+                    <p>Estos son los datos importantes encontrados en tus XML.</p>
+                </div>
+                <span class="status-pill">Paso 1 completado</span>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <span>Facturas</span>
+                    <strong>@totalFacturas</strong>
+                </div>
+                <div class="summary-card">
+                    <span>Total revisado</span>
+                    <strong>$ @totalProcesado.ToString("N2")</strong>
+                </div>
+                <div class="summary-card summary-card--success">
+                    <span>Con IVA</span>
+                    <strong>@facturasConIva</strong>
+                </div>
+            </div>
+
+            <div class="result-table-wrap">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Razón social</th>
+                            <th>Comprador</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>IVA</th>
+                            <th>Clasificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Results)
+                        {
+                            <tr>
+                                <td>@(r.IssuerLegalName ?? "-")</td>
+                                <td>@(r.BuyerLegalName ?? "-")</td>
+                                <td>@(r.InvoiceDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                <td>@(r.GrandTotal.HasValue ? $"$ {r.GrandTotal.Value:N2}" : "-")</td>
+                                <td>
+                                    <span class="iva-pill @(r.IsVatRefundEligible ? "iva-pill--yes" : "iva-pill--no")">
+                                        @(r.IsVatRefundEligible ? "Aplica" : "No aplica")
+                                    </span>
+                                </td>
+                                <td>@r.Category</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+
+    <aside class="help-card" aria-label="Ayuda">
+        <strong>¿Dónde están mis facturas?</strong>
+        <p>Tus archivos XML suelen estar en Descargas o Documentos. Si no estás seguro, pide ayuda a un familiar o contador.</p>
+    </aside>
+</section>

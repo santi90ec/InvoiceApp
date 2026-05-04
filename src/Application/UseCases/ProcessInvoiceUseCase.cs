@@ -9,9 +9,15 @@ public class ProcessInvoiceUseCase(IInvoiceReader reader, IInvoiceClassifier cla
     private readonly IInvoiceReader _reader = reader;
     private readonly IInvoiceClassifier _classifier = classifier;
 
+    [Obsolete("Use ProcessSingleInvoiceAsync.")]
     public async Task<InvoiceClassificationResult> ProcessSingleInvoiceAsyn(string filePath, CancellationToken ct = default)
     {
-        Invoice invoice = await _reader.ReadFromXmlAsync(filePath, ct);
+        return await ProcessSingleInvoiceAsync(filePath, ct);
+    }
+
+    public async Task<InvoiceClassificationResult> ProcessSingleInvoiceAsync(string filePath, CancellationToken ct = default)
+    {
+        Invoice invoice = await _reader.ReadFromFileAsync(filePath, ct);
         InvoiceClassificationResult classificationResult = await _classifier.ClassifyInvoiceAsync(invoice, ct);
         return classificationResult;
     }

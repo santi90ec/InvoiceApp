@@ -1,76 +1,59 @@
-﻿@* @page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div> *@
-
 @page
 @model InvoiceApp.Presentation.Pages.IndexModel
-
-<h2>Invoices</h2>
-
-<div style="display:flex; gap:24px; align-items:flex-start;">
-    <!-- Single XML -->
-    <div style="border:1px solid #ddd; padding:16px; width: 420px;">
-        <h3>Cargar XML</h3>
-        <form method="post" enctype="multipart/form-data" asp-page-handler="ProcessFile">
-            <input type="file" name="XmlFile" accept=".xml" required />
-            <div style="margin-top:12px;">
-                <button type="submit">Procesar XML</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Folder (upload many files from a folder) -->
-    <div style="border:1px solid #ddd; padding:16px; width: 420px;">
-        <h3>Leer carpeta</h3>
-        <form method="post" enctype="multipart/form-data" asp-page-handler="ProcessFolder">
-            <input type="file" name="FolderFiles" webkitdirectory multiple />
-            <div style="margin-top:12px;">
-                <button type="submit">Procesar carpeta</button>
-            </div>
-            <small>Nota: funciona mejor en Chrome/Edge.</small>
-        </form>
-    </div>
-</div>
-
-@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
-{
-    <div style="margin-top:16px; color:#b00020;">
-        <strong>Error:</strong> @Model.ErrorMessage
-    </div>
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-@if (Model.Results?.Count > 0)
-{
-    <h3 style="margin-top:24px;">Resultados</h3>
+<section class="app-container page-section">
+    <div class="page-heading">
+        <h1>Bienvenido</h1>
+        <p>Te ayudamos a hacer tu Devolución de IVA, paso a paso.</p>
+    </div>
 
-    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse; width:100%;">
-        <thead>
-            <tr>
-                <th>InvoiceNumber</th>
-                <th>Category</th>
-                <th>Eligible</th>
-                <th>Confidence</th>
-                <th>Reason</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.Results)
-            {
-                <tr>
-                    <td>@r.InvoiceNumber</td>
-                    <td>@r.Category</td>
-                    <td>@r.IsVatRefundEligible</td>
-                    <td>@r.Confidence</td>
-                    <td>@r.Reason</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <div class="home-grid">
+        <section class="app-card app-card--hero">
+            <div class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <path d="M14 2v6h6"></path>
+                    <path d="M9 15h6"></path>
+                    <path d="M9 11h3"></path>
+                </svg>
+            </div>
+            <div>
+                <h2>¿Qué hace esta aplicación?</h2>
+                <p>
+                    Esta aplicación te guía para revisar tus facturas electrónicas y preparar tu
+                    Devolución de IVA. No necesitas conocimientos técnicos: te llevamos paso a paso.
+                </p>
+            </div>
+            <div class="button-row">
+                <a class="big-button big-button--primary" asp-page="/Paso1">
+                    Empezar Proceso
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="app-card app-card--muted" aria-labelledby="last-run-title">
+            <div class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 id="last-run-title">Última ejecución</h2>
+                <p>Aún no hay un proceso guardado en el historial local.</p>
+            </div>
+            <div class="button-row">
+                <a class="big-button big-button--secondary" asp-page="/Historial">Ver historial</a>
+            </div>
+        </section>
+
+        <div class="app-alert" role="status">
+            <strong>Tus datos están seguros</strong>
+            <span>Esta aplicación procesa tus XML localmente. No guardamos contraseñas.</span>
+        </div>
+    </div>
+</section>

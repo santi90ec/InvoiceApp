@@ -1,0 +1,100 @@
+@page "/paso-2"
+@model InvoiceApp.Presentation.Pages.Paso2Model
+@{
+    ViewData["Title"] = "Paso 2: Revisar facturas";
+    var totalProcesado = Model.Invoices.Where(i => i.GrandTotal.HasValue).Sum(i => i.GrandTotal!.Value);
+}
+
+<nav aria-label="Paso 2 de 5" class="stepper-shell">
+    <ol class="app-container stepper">
+        <li class="stepper__item stepper__item--done">
+            <span class="stepper__circle" aria-hidden="true">✓</span>
+            <span class="stepper__text"><span>Paso 1</span><small>Carpeta</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item stepper__item--active">
+            <span class="stepper__circle" aria-current="step">2</span>
+            <span class="stepper__text"><span>Paso 2</span><small>Revisar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">3</span>
+            <span class="stepper__text"><span>Paso 3</span><small>Clasificar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">4</span>
+            <span class="stepper__text"><span>Paso 4</span><small>Iniciar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">5</span>
+            <span class="stepper__text"><span>Paso 5</span><small>Resultados</small></span>
+        </li>
+    </ol>
+</nav>
+
+<section class="app-container page-section">
+    <div class="page-heading">
+        <h1>Revisa tus facturas</h1>
+        <p>Confirma que encontramos la información principal antes de clasificar cada factura.</p>
+    </div>
+
+    @if (Model.Invoices.Count == 0)
+    {
+        <div class="app-alert app-alert--error" role="alert">
+            <strong>No hay facturas cargadas</strong>
+            <span>Primero carga una carpeta o un XML para continuar.</span>
+        </div>
+        <div class="button-row page-actions">
+            <a class="big-button big-button--primary" asp-page="/Paso1">Cargar facturas</a>
+        </div>
+    }
+    else
+    {
+        <div class="summary-grid">
+            <div class="summary-card">
+                <span>Facturas</span>
+                <strong>@Model.Invoices.Count</strong>
+            </div>
+            <div class="summary-card">
+                <span>Total revisado</span>
+                <strong>$ @totalProcesado.ToString("N2")</strong>
+            </div>
+            <div class="summary-card summary-card--success">
+                <span>Listas para clasificar</span>
+                <strong>@Model.Invoices.Count</strong>
+            </div>
+        </div>
+
+        <div class="invoice-card-list">
+            @foreach (var invoice in Model.Invoices)
+            {
+                <article class="invoice-review-card">
+                    <div>
+                        <h2>@(invoice.IssuerLegalName ?? "Proveedor sin nombre")</h2>
+                        <p>@(string.IsNullOrWhiteSpace(invoice.IssuerRuc) ? "RUC no disponible" : $"RUC {invoice.IssuerRuc}")</p>
+                    </div>
+                    <dl class="invoice-facts">
+                        <div>
+                            <dt>Fecha</dt>
+                            <dd>@(invoice.InvoiceDate?.ToString("dd/MM/yyyy") ?? "-")</dd>
+                        </div>
+                        <div>
+                            <dt>Total</dt>
+                            <dd>@(invoice.GrandTotal.HasValue ? $"$ {invoice.GrandTotal.Value:N2}" : "-")</dd>
+                        </div>
+                    </dl>
+                </article>
+            }
+        </div>
+
+        <div class="button-row page-actions">
+            <a class="big-button big-button--secondary" asp-page="/Paso1">Volver</a>
+            <a class="big-button big-button--primary" asp-page="/Paso3">
+                Continuar a clasificar
+                <span aria-hidden="true">→</span>
+            </a>
+        </div>
+    }
+</section>

@@ -26,6 +26,7 @@ public class BasicInvoiceClassifierTests
         result.IsVatRefundEligible.Should().BeTrue();
         result.Confidence.Should().Be(1m);
         result.IssuerLegalName.Should().Be("Proveedor Demo");
+        result.IssuerRuc.Should().Be("1790012345001");
         result.BuyerLegalName.Should().Be("Comprador Demo");
         result.InvoiceDate.Should().Be(new DateTime(2026, 5, 4));
         result.GrandTotal.Should().Be(11.2m);

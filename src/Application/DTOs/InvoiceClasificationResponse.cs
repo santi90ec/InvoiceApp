@@ -7,6 +7,7 @@ public class InvoiceClassificationResult(
     decimal confidence,
     string? reason = null,
     string? issuerLegalName = null,
+    string? issuerRuc = null,
     string? buyerLegalName = null,
     DateTime? invoiceDate = null,
     decimal? grandTotal = null)
@@ -17,6 +18,7 @@ public class InvoiceClassificationResult(
     public decimal Confidence { get; } = confidence;
     public string? Reason { get; } = reason;
     public string? IssuerLegalName { get; } = issuerLegalName;
+    public string? IssuerRuc { get; } = issuerRuc;
     public string? BuyerLegalName { get; } = buyerLegalName;
     public DateTime? InvoiceDate { get; } = invoiceDate;
     public decimal? GrandTotal { get; } = grandTotal;

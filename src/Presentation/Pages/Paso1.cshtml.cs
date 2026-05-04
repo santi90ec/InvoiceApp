@@ -1,5 +1,6 @@
 using InvoiceApp.Application.DTOs;
 using InvoiceApp.Application.UseCase;
+using InvoiceApp.Presentation.Flow;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -43,6 +44,8 @@ public class Paso1Model(ProcessInvoiceUseCase useCase, ILogger<Paso1Model> logge
 
             var result = await _useCase.ProcessSingleInvoiceAsync(tempFilePath, ct);
             Results = [result];
+            InvoiceFlowSession.SaveInvoices(HttpContext.Session, Results.Select(InvoiceFlowItem.FromResult));
+            return RedirectToPage("/Paso2");
         }
         catch (InvalidDataException ex)
         {
@@ -93,6 +96,8 @@ public class Paso1Model(ProcessInvoiceUseCase useCase, ILogger<Paso1Model> logge
 
             var results = await _useCase.ProcessMultipleInvoicesAsync(runFolder, ct);
             Results = [.. results];
+            InvoiceFlowSession.SaveInvoices(HttpContext.Session, Results.Select(InvoiceFlowItem.FromResult));
+            return RedirectToPage("/Paso2");
         }
         catch (InvalidDataException ex)
         {

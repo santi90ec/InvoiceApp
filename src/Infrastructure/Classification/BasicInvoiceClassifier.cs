@@ -24,6 +24,7 @@ public class BasicInvoiceClassifier : IInvoiceClassifier
             1m,
             reason,
             invoice.Issuer.LegalName,
+            invoice.Issuer.Ruc,
             invoice.Buyer.LegalName,
             invoice.InvoiceDate,
             invoice.FinancialSummary.GrandTotal);

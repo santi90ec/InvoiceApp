@@ -198,6 +198,20 @@ h2 {
   box-shadow: 0 0 0 0.25rem rgb(35 81 163 / 14%);
 }
 
+.stepper__item--done {
+  color: var(--foreground);
+}
+
+.stepper__item--done .stepper__circle {
+  border-color: var(--success);
+  background: var(--success);
+  color: var(--success-foreground);
+}
+
+.stepper__item--done .stepper__line {
+  background: var(--success);
+}
+
 .stepper__text {
   display: none;
 }
@@ -422,6 +436,81 @@ h2 {
   color: var(--muted-foreground);
 }
 
+.page-actions {
+  margin-top: 1.5rem;
+}
+
+.invoice-card-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.invoice-review-card,
+.invoice-classify-card {
+  display: grid;
+  gap: 1rem;
+  border: 2px solid var(--border);
+  border-radius: calc(var(--radius) + 0.5rem);
+  background: var(--card);
+  padding: 1.15rem;
+}
+
+.invoice-review-card h2,
+.invoice-classify-card h2 {
+  margin-bottom: 0.25rem;
+  overflow-wrap: anywhere;
+}
+
+.invoice-review-card p,
+.invoice-classify-card p {
+  margin-bottom: 0;
+  color: var(--muted-foreground);
+}
+
+.invoice-facts {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.invoice-facts div {
+  border-radius: var(--radius);
+  background: var(--secondary);
+  padding: 0.75rem;
+}
+
+.invoice-facts dt {
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.invoice-facts dd {
+  margin: 0.2rem 0 0;
+  color: var(--foreground);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.category-picker {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.category-picker select {
+  width: 100%;
+  min-height: 3.5rem;
+  border: 2px solid var(--input);
+  border-radius: calc(var(--radius) + 0.25rem);
+  background: var(--background);
+  padding: 0.8rem;
+  color: var(--foreground);
+  font: inherit;
+  font-weight: 700;
+}
+
 .results-section {
   margin-top: 1.5rem;
   padding: 1.25rem;
@@ -563,6 +652,20 @@ h2 {
   .history-row {
     grid-template-columns: auto 1fr auto;
     padding: 1.5rem;
+  }
+
+  .invoice-review-card {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+    align-items: center;
+  }
+
+  .invoice-classify-card {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.65fr);
+    align-items: center;
+  }
+
+  .invoice-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .results-heading {

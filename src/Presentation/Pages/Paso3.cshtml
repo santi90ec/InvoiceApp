@@ -1,0 +1,107 @@
+@page "/paso-3"
+@model InvoiceApp.Presentation.Pages.Paso3Model
+@{
+    ViewData["Title"] = "Paso 3: Revisar y clasificar";
+}
+
+<nav aria-label="Paso 3 de 5" class="stepper-shell">
+    <ol class="app-container stepper">
+        <li class="stepper__item stepper__item--done">
+            <span class="stepper__circle" aria-hidden="true">✓</span>
+            <span class="stepper__text"><span>Paso 1</span><small>Carpeta</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item stepper__item--done">
+            <span class="stepper__circle" aria-hidden="true">✓</span>
+            <span class="stepper__text"><span>Paso 2</span><small>Revisar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item stepper__item--active">
+            <span class="stepper__circle" aria-current="step">3</span>
+            <span class="stepper__text"><span>Paso 3</span><small>Clasificar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">4</span>
+            <span class="stepper__text"><span>Paso 4</span><small>Iniciar</small></span>
+            <span class="stepper__line" aria-hidden="true"></span>
+        </li>
+        <li class="stepper__item">
+            <span class="stepper__circle">5</span>
+            <span class="stepper__text"><span>Paso 5</span><small>Resultados</small></span>
+        </li>
+    </ol>
+</nav>
+
+<section class="app-container page-section">
+    <div class="page-heading">
+        <h1>Revisar y clasificar</h1>
+        <p>Elige una categoría para cada factura. Esto ayuda a organizar tus datos antes de continuar.</p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="app-alert app-alert--error" role="alert">
+            <strong>Revisa la clasificación</strong>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    @if (Model.Invoices.Count == 0)
+    {
+        <div class="app-alert app-alert--error" role="alert">
+            <strong>No hay facturas cargadas</strong>
+            <span>Primero carga una carpeta o un XML para continuar.</span>
+        </div>
+        <div class="button-row page-actions">
+            <a class="big-button big-button--primary" asp-page="/Paso1">Cargar facturas</a>
+        </div>
+    }
+    else
+    {
+        <form method="post">
+            <div class="invoice-card-list">
+                @for (var i = 0; i < Model.Invoices.Count; i++)
+                {
+                    var invoice = Model.Invoices[i];
+                    <article class="invoice-classify-card">
+                        <input type="hidden" name="InvoiceCategories[@i].Id" value="@invoice.Id" />
+                        <div class="invoice-card-main">
+                            <h2>@(invoice.IssuerLegalName ?? "Proveedor sin nombre")</h2>
+                            <p>@(string.IsNullOrWhiteSpace(invoice.IssuerRuc) ? "RUC no disponible" : $"RUC {invoice.IssuerRuc}")</p>
+                            <dl class="invoice-facts">
+                                <div>
+                                    <dt>Fecha</dt>
+                                    <dd>@(invoice.InvoiceDate?.ToString("dd/MM/yyyy") ?? "-")</dd>
+                                </div>
+                                <div>
+                                    <dt>Total</dt>
+                                    <dd>@(invoice.GrandTotal.HasValue ? $"$ {invoice.GrandTotal.Value:N2}" : "-")</dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <label class="category-picker">
+                            <span>Categoría</span>
+                            <select name="InvoiceCategories[@i].Category" aria-label="Categoría para @(invoice.IssuerLegalName ?? "factura")">
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category" selected="@(invoice.ManualCategory == category)">
+                                        @category
+                                    </option>
+                                }
+                            </select>
+                        </label>
+                    </article>
+                }
+            </div>
+
+            <div class="button-row page-actions">
+                <a class="big-button big-button--secondary" asp-page="/Paso2">Volver</a>
+                <button class="big-button big-button--primary" type="submit">
+                    Confirmar y continuar
+                    <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </form>
+    }
+</section>
